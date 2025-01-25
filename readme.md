@@ -10,6 +10,7 @@ started this project on 12/26/24. i have plenty of ideas and plans for the futur
 
 ## requirements
 - custom web console plugin – coming soon
+- custom web console spigot – coming soon
 
 
 
