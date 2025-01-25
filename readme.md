@@ -28,6 +28,10 @@ started this project on 12/26/24. i have plenty of ideas and plans for the futur
 - web console
 
 
+# screenshots of project
+Home Tab - ![image](https://github.com/user-attachments/assets/0b92506e-ce6f-4a2b-9286-ba525a692dd4)
+
+
 
 
 
