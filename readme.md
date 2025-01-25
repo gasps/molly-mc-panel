@@ -1,8 +1,5 @@
 # mollyinduced minecraft server panel
 
-## requirements
-- custom web console plugin – coming soon
-
 this is a project i forked (though i’ve forgotten from who), but i completely revamped it. it no longer uses their source code and has become my own project.
 
 no external libraries or dependencies are used, except for those needed for browser-based applications (i.e., javascript, html, css).
@@ -10,6 +7,11 @@ no external libraries or dependencies are used, except for those needed for brow
 currently, it's compatible with windows 10, but i'm planning to add support for linux, macos, and maybe even mobile. right now, this is intended for localhost only, but i'll expand it to allow remote connections without the need to be local.
 
 started this project on 12/26/24. i have plenty of ideas and plans for the future, so stay tuned!
+
+## requirements
+- custom web console plugin – coming soon
+
+
 
 ## how to use?
 1. create a "servers" folder if it doesn't exist, then add or create your server inside.
