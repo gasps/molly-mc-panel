@@ -1,14 +1,4 @@
-/**
- WebConsole Persistence Manager for WebConsole
- Used to save your servers and config into your browser
- https://github.com/mesacarlos
- 2019-2020 Carlos Mesa under MIT License.
-*/
 class WebConsolePersistenceManager{
-	
-
-	
-
 	/**
 	* Create server list if not defined
 	*/
@@ -22,7 +12,27 @@ class WebConsolePersistenceManager{
 			window.localStorage.WebConsole = JSON.stringify(storageObj);
 		}
 	}
+
+		/**
+	* Get server details as object
+	*/
+	getServer(serverURI){
+		var i;
+		var servers = this.getAllServers();
+		for (i = 0; i < servers.length; i++) { 
+			if(servers[i].serverURI == serverURI){
+				return servers[i];
+			}
+		}
+	}
 	
+	/**
+	* Get all servers
+	*/
+	getAllServers(){
+		var storageObj = JSON.parse(window.localStorage.WebConsole);
+		return storageObj.servers;
+	}
 	/**
 	* Replaces all server list with provided list
 	*/
@@ -84,10 +94,6 @@ class WebConsolePersistenceManager{
 class WSServer{
 	constructor(serverURI){
 		this.serverURI = serverURI;
-	}
-	
-	setPassword(pwd){
-		this.serverPassword = pwd;
 	}
 }
 

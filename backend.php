@@ -10,6 +10,22 @@ $serverDirectory = dirname(path: $serverJarPath); // Get the directory containin
 $minMemory = '1024M'; // Minimum memory
 $maxMemory = '1024M'; // Maximum memory
 
+// Initialize a variable to store both the server status and selected server
+$serverStatus = [
+    'server_running' => true, // Default value
+    'current_server' => $selectedServer   // Default value
+];
+
+// Check if a server is selected before proceeding
+if (isset($_POST[$selectedServer]) && !empty($_POST[$selectedServer])) {
+    $serverStatus['server_running'] = true; // Mark the server as running
+    $serverStatus['current_server'] = $_POST[$selectedServer]; // Set which server is running
+}
+
+// Optionally store this information in the session
+$_SESSION['server_status'] = $serverStatus;
+
+
 // Function to send debug messages to the console
 function debugToConsole($message) {
     echo "<script>console.log('$message');</script>";
@@ -88,6 +104,10 @@ if (isset($_GET["stop"])) {
 if (isset($_GET["start"])) {
     if (!isServerRunning($selectedServer)) {
         startServer($selectedServer, $serverJarPath, $serverDirectory, $minMemory, $maxMemory);
+        $_SESSION['server_running'] = true; // Mark the server as running
+        $_SESSION['current_server'] = $_POST[$selectedServer]; // Set which server is running
+    // Debug the server status
+    debugToConsole("sent current server, and is running to index.php: " . json_encode($serverStatus));
     }
 }
 ?>

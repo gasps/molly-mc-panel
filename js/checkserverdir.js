@@ -54,11 +54,11 @@ async function displayServers(servers) {
         serverElement.innerHTML = `
             <h3>${server}</h3>
             ${port ? `<p style="margin-top: -10px;">Port: ${port}</p>` : ''}  <!-- Display port if it exists -->
-            <a href="?select_server=${encodeURIComponent(server)}" class="button">Click to manage</a>
+            <a href="?select_server=${encodeURIComponent(server)}" class="button">Click to open</a>
             <div class="icons">
-                <span class="icon" onclick="event.preventDefault(); editServer('${server}')">
-                    <span class="material-symbols-rounded">edit</span>
-                </span>
+                   <a href="manager.php" class="icon">
+                            <span class="material-symbols-rounded">edit</span>
+                        </a>
                 <span class="icon" onclick="event.preventDefault(); deleteServer('${server}')">
                     <span class="material-symbols-rounded">delete</span>
                 </span>
@@ -91,11 +91,6 @@ function getPortForServer(serverName) {
 
 // Call the function to fetch and display servers when the page loads
 window.onload = fetchServers;
-
-function editServer(serverName) {
-    alert("Edit functionality for server: " + serverName);
-    // Add logic to edit the server
-}
 
 function deleteServer(serverName) {
     if (confirm("Are you sure you want to delete server: " + serverName + "?")) {

@@ -1,77 +1,123 @@
 <?php
+session_set_cookie_params(86400 * 30); 
 session_start();
 
-// directories/arrays
-$serverDir = __DIR__ . '/servers';
-$servers = is_dir($serverDir) ? array_values(array_diff(scandir($serverDir), ['.', '..'])) : [];
+// 1. Fetch the list of servers
+$serversDir = __DIR__.'/servers';
+$servers = is_dir($serversDir)
+    ? array_values(array_diff(scandir($serversDir), ['.', '..']))
+    : [];
 
-// define variables
+// 2. Define or retrieve important session values
 $selectedServer = $_SESSION['selected_server'] ?? null;
-$port = $_SESSION['ports'][$selectedServer] ?? null;
+$port          = isset($selectedServer, $_SESSION['ports'][$selectedServer])
+                ? $_SESSION['ports'][$selectedServer]
+                : null;
 
+// 3. Build display text
 $serverDisplayText = "Selected Server: " . ($selectedServer ? htmlspecialchars($selectedServer) : "None");
-$portDisplayText = "Selected Port: " . ($port ? htmlspecialchars($port) : "None");
+$portDisplayText   = "Selected Port: "   . ($port ? htmlspecialchars($port) : "None");
+
 $throwError = ""; // Initialize error message
 
+// --------------------------------------------------------------------------
 // Handle port setting
+// --------------------------------------------------------------------------
 if (isset($_POST['set_port']) && isset($_POST['port'])) {
     $port = $_POST['port'];
     $_SESSION['ports'][$selectedServer] = $port;
-    header("Location: index.php"); // Redirect to avoid resubmission
+    header("Location: index.php"); // Redirect to avoid form resubmission
     exit;
 }
 
-// server selection handler
+// --------------------------------------------------------------------------
+// Server selection handler
+// --------------------------------------------------------------------------
 if (isset($_GET['select_server'])) {
     $selectedServer = $_GET['select_server'];
     if (in_array($selectedServer, $servers)) {
-        $_SESSION['selected_server'] = $selectedServer; // store this globally
-
-        header('location: index.php');
-
-        // if (!$port == "None") {
-            header("Location: console.php");
-        //     exit;
-        // }        
+        // Store server in session
+        $_SESSION['selected_server'] = $selectedServer;
+        // Optional redirect logic
+        header("Location: index.php");
+        header("Location: console.php");
     } else {
-        // Handle invalid server selection if needed
         $throwError = "Invalid server selected.";
     }
 }
 
-// for server parsing
-if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['fetch_servers']) && $_GET['fetch_servers'] == 'true') {
+// --------------------------------------------------------------------------
+// Fetch the list of servers via AJAX
+// --------------------------------------------------------------------------
+if (
+    $_SERVER['REQUEST_METHOD'] === 'GET' 
+    && isset($_GET['fetch_servers']) 
+    && $_GET['fetch_servers'] == 'true'
+) {
     header('Content-Type: application/json');
-    echo json_encode($servers); // Output the server list as JSON
+    echo json_encode($servers);
     exit;
 }
 
-// Fetch port for a specific server
+// --------------------------------------------------------------------------
+// Fetch port for a specific server (AJAX usage)
+// --------------------------------------------------------------------------
 if (isset($_GET['server'])) {
     $serverName = $_GET['server'];
     $ports = $_SESSION['ports'] ?? [];
 
-    // Return the port for the selected server
     if (isset($ports[$serverName])) {
         echo json_encode(['port' => $ports[$serverName]]);
     } else {
         echo json_encode(['port' => null]);
     }
-    exit; // Stop further script execution
+    exit;
 }
 
+// --------------------------------------------------------------------------
 // Check if a server is selected but no port is set
+// --------------------------------------------------------------------------
 if ($selectedServer && !$port) {
-    // If a server is selected but no port is set, log to the console
     $throwError = "Please set a port before trying to access the console.";
-    echo "<script>console.error('Error: Server is selected but port is not set for ' + '" . htmlspecialchars($selectedServer) . "');</script>";
-} else if ($selectedServer && $port) {
-    echo "<script>console.log('Port is set for the selected server.');</script>";
+    echo "<script>console.error('Error: Server is selected but port is not set for " 
+         . htmlspecialchars($selectedServer) 
+         . "');</script>";
+} elseif ($selectedServer && $port) {
+    // Just a small log
+    echo "<script>console.log('Port is set for the selected server: " . htmlspecialchars($selectedServer) . "');</script>";
 }
 
+// --------------------------------------------------------------------------
+// Read the server status from session
+// --------------------------------------------------------------------------
+$serverStatus = $_SESSION['server_status'] ?? null;
+
+// 1) Log entire server_status array (if not null)
+if (!empty($serverStatus) && is_array($serverStatus)) {
+    // Convert the entire array to JSON for the console
+    $statusJson = json_encode($serverStatus);
+    echo "<script>
+            console.log('Full Server Status: ' + JSON.stringify($statusJson));
+          </script>";
+
+    // 2) Specifically check if server_running == true
+    if (!empty($serverStatus['server_running'])) {
+        // We can log the current server name too
+        $whichServer = $serverStatus['current_server'] ?? '(unknown)';
+        echo "<script>
+                console.log('Server is running: " . htmlspecialchars($whichServer) . "');
+              </script>";
+    } else {
+        echo "<script>console.log('No server is currently running.');</script>";
+    }
+}
+
+// Helper debug function
+function debugToConsole($message) {
+    echo "<script>console.log('$message');</script>";
+}
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,7 +126,8 @@ if ($selectedServer && !$port) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server Panel</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" 
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body>
 <div class="container">
@@ -91,15 +138,15 @@ if ($selectedServer && !$port) {
             </div>
         </div>
         <div class="sidebar">
-        <a href="index.php" class="active">
+          <a href="index.php" class="active">
             <span class="material-symbols-rounded">grid_view</span>
             <h3>Home</h3>
           </a>
-          <a href="manager.php" class=" <?php echo $selectedServer ? '' : 'disabled-link'; ?>">
+          <a href="manager.php" class="<?php echo $selectedServer ? '' : 'disabled-link'; ?>">
             <span class="material-symbols-rounded">computer</span>
             <h3>Manager</h3>
           </a>
-          <a href="console.php" class=" <?php echo $port ? '' : 'disabled-link'; ?>">
+          <a href="console.php" class="<?php echo $port ? '' : 'disabled-link'; ?>">
             <span class="material-symbols-rounded">terminal</span>
             <h3>Console</h3>
           </a>
@@ -114,17 +161,20 @@ if ($selectedServer && !$port) {
           <a href="debug.php">
             <span class="material-symbols-rounded">debug</span>
           </a>
-            <div class="selected-server">
-                <div class="selection-info">
-                    <h3 id="selected-server"><?php echo htmlspecialchars($serverDisplayText); ?></h3>
-
-                    <h3 id="selected-port"><?php echo htmlspecialchars($portDisplayText); ?></h3>
-                </div>
-            </div>
+          <div class="selected-server">
+              <div class="selection-info">
+                  <h3 id="selected-server"><?php echo htmlspecialchars($serverDisplayText); ?></h3>
+                  <h3 id="selected-port"><?php echo htmlspecialchars($portDisplayText); ?></h3>
+              </div>
+          </div>
         </div>
     </aside>
     <main>
-        <h1 id="welcome">Welcome, <span id="username"><?php echo htmlspecialchars($username ?? "Unknown"); ?></span></h1>
+        <h1 id="welcome">Welcome, 
+          <span id="username">
+            <?php echo htmlspecialchars($username ?? "Unknown"); ?>
+          </span>
+        </h1>
         <p style="color: white;">Molly Web Panel Version: 1.0</p>
 
         <!-- error message handling -->
@@ -147,19 +197,26 @@ if ($selectedServer && !$port) {
             <?php foreach ($servers as $server): ?>
                 <div class="item">
                     <h3><?php echo htmlspecialchars($server); ?></h3>
-
                     <!-- Display port if it exists -->
                     <?php if (isset($_SESSION['ports'][$server])): ?>
-                        <p style="margin-top: -10px;">Port: <?php echo htmlspecialchars($_SESSION['ports'][$server]); ?></>
+                        <p style="margin-top: -10px;">Port: 
+                          <?php echo htmlspecialchars($_SESSION['ports'][$server]); ?>
+                        </p>
                     <?php endif; ?>
 
-                    <a href="?select_server=<?php echo urlencode($server); ?>" class="button">Click to manage</a>
+                    <a href="?select_server=<?php echo urlencode($server); ?>" class="button">
+                      Click to open
+                    </a>
 
                     <div class="icons">
-                        <span class="icon" onclick="event.preventDefault(); editServer('<?php echo htmlspecialchars($server); ?>')">
+                        <!-- Replace JavaScript edit call with a direct PHP link -->
+                        <a href="manager.php" class="icon">
                             <span class="material-symbols-rounded">edit</span>
-                        </span>
-                        <span class="icon" onclick="event.preventDefault(); deleteServer('<?php echo htmlspecialchars($server); ?>')">
+                        </a>
+                        
+                        <!-- Keep JavaScript for delete if you want, or convert similarly -->
+                        <span class="icon" 
+                              onclick="event.preventDefault(); deleteServer('<?php echo htmlspecialchars($server); ?>')">
                             <span class="material-symbols-rounded">delete</span>
                         </span>
                     </div>
@@ -174,7 +231,9 @@ if ($selectedServer && !$port) {
             <h4>Set Port for Server</h4>
             <form method="POST">
                 <label for="port">Port:</label>
-                <input type="number" id="port" name="port" value="<?php echo htmlspecialchars($port); ?>" required />
+                <input type="number" id="port" name="port" 
+                       value="<?php echo htmlspecialchars($port); ?>" 
+                       required />
                 <div class="modal-actions">
                     <button type="submit" name="set_port" id="setPortBtn">Set Port</button>
                     <button type="button" id="closeModalBtn" onclick="closeModal()">Close</button>
@@ -200,20 +259,17 @@ if ($selectedServer && !$port) {
         document.getElementById("portModal").style.display = "block";
     <?php endif; ?>
 
-    function editServer(serverName) {
-        alert("Edit functionality for server: " + serverName);
-        // Add logic to edit the server
-    }
-
+    // Removed the old editServer() JS function. 
+    // If you want pure PHP navigation for "delete" too, 
+    // remove or replace this function similarly.
     function deleteServer(serverName) {
         if (confirm("Are you sure you want to delete server: " + serverName + "?")) {
             alert("Delete functionality for server: " + serverName);
-            // Add logic to delete the server
+            // TODO: add your real delete logic
         }
     }
 </script>
 
 <script type="text/javascript" src="js/checkserverdir.js"></script>
-
 </body>
 </html>

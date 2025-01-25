@@ -37,7 +37,10 @@ if ($selectedServer) {
     echo "No server selected.";
 }
 
-
+if (!isset($_SESSION['server_running'])) {
+  $_SESSION['server_running'] = false;
+  $_SESSION['current_server'] = null;
+}
 
 ?>
 
@@ -164,13 +167,13 @@ if ($selectedServer) {
             logIframe.src = logIframe.src;
         });
     });
-</script>
+                </script>
 
-<form action="backend.php" method="get" target="hid1" id="startForm">
-    <input type="submit" value="Start">
-    <input type="hidden" name="ad_id" value="2">      
-    <input type="hidden" name="start" value="2">             
-</form>
+                <form action="backend.php" method="get" target="hid1" id="startForm">
+                  <input type="submit" value="Start">
+                  <input type="hidden" name="ad_id" value="2">      
+                  <input type="hidden" name="start" value="2">             
+                </form>
                 <form action="backend.php" method="get" target="hid1">
                     <input type="submit" value="Stop">
                     <input type="hidden" name="ad_id" value="2">      
