@@ -1,0 +1,7 @@
+# yeah so we don't wanna give randoms your server files.. these are potentially dangerous.
+servers/*/
+
+# get your nasty boogers off my documents
+readmecss.md
+todo.txt
+debug.php
