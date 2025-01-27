@@ -1,10 +1,4 @@
 /**
- Main JS file for WebConsole.
- https://github.com/mesacarlos
- 2019-2020 Carlos Mesa under MIT License.
-*/
-
-/**
 * Global variables
 */
 var persistenceManager = new WebConsolePersistenceManager();

@@ -112,10 +112,6 @@ if (!isset($_SESSION['server_running'])) {
             <span class="material-symbols-rounded">terminal</span>
             <h3>Console</h3>
           </a>
-          <a href="files.php">
-            <span class="material-symbols-rounded">folder</span>
-            <h3>Files</h3>
-          </a>
           <a href="settings.php">
             <span class="material-symbols-rounded">settings</span>
             <h3>Settings</h3>

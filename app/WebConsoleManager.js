@@ -1,9 +1,3 @@
-/**
- WebConsole Manager for WebConsole
- Used to manage active connections
- https://github.com/mesacarlos
- 2019-2020 Carlos Mesa under MIT License.
-*/
 class WebConsoleManager {
 	constructor(){
 		this.activeConnections = []; //Active Connectors list

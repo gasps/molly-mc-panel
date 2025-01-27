@@ -267,6 +267,7 @@ aside .sidebar a:hover .message-count {
 
 main {
   margin-top: 1.8rem;
+  max-height: 100vh; /* or specify a fixed height if needed */
 }
 
 main .date {
@@ -926,3 +927,109 @@ background-color: rgb(39, 39, 39);
   padding: 10px;
   margin-bottom: 20px;
 }
+
+.settings-container {
+  padding: 20px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.settings-container h2 {
+  margin-bottom: 10px;
+}
+
+/* Flexbox to align items in a single line */
+.port-form {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Add spacing between elements */
+}
+
+/* Ensure labels have consistent width */
+.port-form label {
+  width: 70px; /* Fixed width for label */
+  text-align: right; /* Align label text to the right */
+}
+
+/* Fixed dimensions for input and button */
+.port-form input,
+.port-form button {
+  width: 100px;  /* Fixed width */
+  height: 40px;  /* Fixed height */
+  padding: 8px;  /* Padding inside the element */
+  box-sizing: border-box; /* Ensure padding doesn't affect width */
+  flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Ensure the button and input text are aligned */
+.port-form input {
+  text-align: center; /* Center text inside the input */
+}
+
+.port-form button {
+  text-align: center; /* Center text inside the button */
+}
+
+
+
+/* Additional styling for server files */
+.server-files {
+  color: white;
+}
+
+
+.files-container {
+  max-width: 90%;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.files-container h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.file-table { 
+  width: 100%; 
+  border-collapse: collapse; 
+  margin-top: 10px; 
+  border: 1px solid #ddd; 
+}
+
+.file-table th, 
+.file-table td { 
+  border: 1px solid #ddd; 
+  padding: 10px; 
+  text-align: left; 
+}
+
+.file-table th { 
+  background-color: #333; 
+  color: white; 
+  font-weight: bold;
+}
+
+.file-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.file-table tr:nth-child(odd) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.file-table a { 
+  text-decoration: none; 
+  color: white; 
+}
+
+.file-table a:hover { 
+  text-decoration: underline; 
+}
+
+
+/* you are going to recode this whole css, and make a custom one, this is atrocious */

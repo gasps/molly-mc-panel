@@ -2,6 +2,10 @@
 servers/*/
 
 # get your nasty boogers off my documents
-readmecss.md
 todo.txt
+app/todo.txt
+# useless debugging, just resets data if you really wanna know ;)
 debug.php
+# markdown files
+readmecss.md
+changelog.md

@@ -56,7 +56,7 @@ async function displayServers(servers) {
             ${port ? `<p style="margin-top: -10px;">Port: ${port}</p>` : ''}  <!-- Display port if it exists -->
             <a href="?select_server=${encodeURIComponent(server)}" class="button">Click to open</a>
             <div class="icons">
-                   <a href="manager.php" class="icon">
+                   <a href="?select_server_edit=${encodeURIComponent(server)}" class="icon">
                             <span class="material-symbols-rounded">edit</span>
                         </a>
                 <span class="icon" onclick="event.preventDefault(); deleteServer('${server}')">
