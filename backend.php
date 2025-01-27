@@ -97,6 +97,31 @@ function stopServer($selectedServer) {
     }
 }
 
+function restartServer($selectedServer, $serverJarPath, $serverDirectory, $minMemory, $maxMemory) {
+    debugToConsole("Attempting to stop the Minecraft server: $selectedServer");
+
+    $pid = getServerPID($selectedServer);
+    if ($pid !== null) {
+        exec("taskkill /PID $pid /F");
+        debugToConsole("Minecraft server $selectedServer stopped.");
+    } else {
+        debugToConsole("Minecraft server $selectedServer is not running.");
+    }
+
+    debugToConsole("Starting server $selectedServer in directory: $serverDirectory");
+
+    // Command to start the server with unique parameters and logs
+    $command = "start /D \"$serverDirectory\" /B java -Xms$minMemory -Xmx$maxMemory -jar " . escapeshellarg(basename($serverJarPath)) . " nogui \"server: $selectedServer\" 2>&1";
+    
+    // Debugging output for the start command
+    debugToConsole("Executing command: $command");
+
+    pclose(popen("cmd /c \"$command\"", "r"));
+    
+    // Debugging output after starting the server
+    debugToConsole("Minecraft server started in directory: $serverDirectory");
+}
+
 // Handling actions via $_GET
 if (isset($_GET["stop"])) {
     stopServer($selectedServer);
@@ -110,4 +135,23 @@ if (isset($_GET["start"])) {
     debugToConsole("sent current server, and is running to index.php: " . json_encode($serverStatus));
     }
 }
+
+// restart handling
+if (isset($_GET["restart"])) {
+        startServer($selectedServer, $serverJarPath, $serverDirectory, $minMemory, $maxMemory);
+        $_SESSION['server_running'] = true; // Mark the server as running
+        $_SESSION['current_server'] = $_POST[$selectedServer]; // Set which server is running
+    // Debug the server status
+    debugToConsole("sent current server, and is running to index.php: " . json_encode($serverStatus));
+}
+
+if (isset($_GET["send"])) {
+    debugToConsole("still need to add this functionality");
+    alert("this function still needs to be made.. 01/27/25");
+}
+
+function alert($message) {
+    echo "<script>alert('$message');</script>";
+}
+
 ?>

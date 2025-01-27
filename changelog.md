@@ -1,5 +1,9 @@
 # i barely log anything so if anything gets logged luckily its here.. lol
 01/27/25 -
+ - cleaned up some connection issues with the form in console.
+ - added restart button functionality (working on send next)
+ - added auto sorting (date, and file type) for files
+
 
  - you can upload your own files to make a server, (has to be a folder, dont have logic for rar's or anything else.)
  - you have to set limit size for xampp, preferred size would be 2G's for servers to upload (typically servers need 10G (each instance) Block Storage on VM's to run properly)

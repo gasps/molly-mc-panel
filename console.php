@@ -141,49 +141,55 @@ if (!isset($_SESSION['server_running'])) {
               <iframe id="theconsoleitselflol" src="app/log.php" title="LOG" width="800px" height="500px" style="border:1px solid black;"></iframe>
               <br>
               <iframe name="hid1" style="display:none;"></iframe>
-
-              <form action="backend.php" method="get" target="hid1">
-                  <input type="text" placeholder="Command..." id="command" name="command"></input>
-                  <input type="hidden" name="ad_id" value="2">   
-                  <input type="submit" name="run" id="sendCommand" value="Send">
-              </form>
-
               <div>
 
               <script>
     // Wait for the DOM to be ready
     document.addEventListener("DOMContentLoaded", function() {
         // Get the start form and the iframe element
-        const startForm = document.querySelector("#startForm");
         const logIframe = document.querySelector("#theconsoleitselflol");
-
+        const startForm = document.querySelector("#startForm");
+        const restartForm = document.querySelector("#restartForm");
+        const stopForm = document.querySelector("#stopForm");
+        
         // Listen for form submission
         startForm.addEventListener("submit", function(event) {
-            // Reload the iframe after the form is submitted
+            setTimeout(function() {
+              logIframe.src = logIframe.src;
+            }, 500);
+        });
+
+        restartForm.addEventListener("submit", function(event) {
+        setTimeout(function() {
             logIframe.src = logIframe.src;
+          }, 3000);
+        });
+        stopForm.addEventListener("submit", function(event) {
+          setTimeout(function() { 
+            logIframe.src = logIframe.src;
+          }, 1500);
         });
     });
                 </script>
-
+              <form action="backend.php" method="get" target="hid1">
+                  <input type="text" placeholder="type command here" id="command" name="command"></input>
+                  <input type="hidden" name="ad_id" value="2">   
+                  <input type="submit" name="send" id="send" value="Send">
+              </form>
                 <form action="backend.php" method="get" target="hid1" id="startForm">
                   <input type="submit" value="Start">
                   <input type="hidden" name="ad_id" value="2">      
                   <input type="hidden" name="start" value="2">             
                 </form>
-                <form action="backend.php" method="get" target="hid1">
+                <form action="backend.php" method="get" target="hid1" id="stopForm">
                     <input type="submit" value="Stop">
                     <input type="hidden" name="ad_id" value="2">      
                     <input type="hidden" name="stop" value="2">             
                 </form>
-                <form action="backend.php" method="get" target="hid1">
-                    <input type="submit" value="Restart">
-                    <input type="hidden" name="ad_id" value="2">    
-                    <input type="hidden" name="restart" value="2">               
-                </form>
-                <form action="backend.php" method="get" target="hid1">
-                    <input type="submit" value="Kill">
-                    <input type="hidden" name="ad_id" value="2">    
-                    <input type="hidden" name="kill" value="2">               
+                <form action="backend.php" method="get" target="hid1" id="restartForm">
+                  <input type="submit" value="Restart">
+                  <input type="hidden" name="ad_id" value="2">      
+                  <input type="hidden" name="restart" value="2">             
                 </form>
 
               </div>

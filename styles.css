@@ -1004,7 +1004,7 @@ background-color: rgb(39, 39, 39);
 .file-table th, 
 .file-table td { 
   border: 1px solid #ddd; 
-  padding: 10px; 
+  padding: 5px; 
   text-align: left; 
 }
 

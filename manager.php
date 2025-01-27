@@ -155,31 +155,66 @@ function debugToConsole($message) {
     <table class="file-table">
         <thead>
             <tr>
-                <th>Icon</th>
+                <th>Type</th>
                 <th>File Name</th>
                 <th>Last Modified</th>
             </tr>
         </thead>
         <tbody>
-            <?php 
-            if (!empty($files)) {
-                foreach ($files as $file): 
-                    $filePath = $directoryPath . $file;
-                    $lastModified = date("Y-m-d H:i:s", filemtime($filePath));
-                    $icon = pathinfo($file, PATHINFO_EXTENSION) == 'php' ? 'code' : 'description';
-            ?>
-            <tr>
-                <td><span class='material-symbols-rounded'><?= htmlspecialchars($icon) ?></span></td>
-                <td><a href='edit_file.php?file=<?= urlencode($file) ?>' target='_blank'><?= htmlspecialchars($file) ?></a></td>
-                <td><?= htmlspecialchars($lastModified) ?></td>
-            </tr>
-            <?php 
-                endforeach;
-            } else {
-                echo "<tr><td colspan='3'>No files found</td></tr>";
+    <?php 
+    if (!empty($files)) {
+        // Separate directories and files
+        $directories = [];
+        $regularFiles = [];
+
+        foreach ($files as $file) {
+            if ($file == "server.jar" || strpos($file, ".bat") !== false) {
+                continue;
             }
-            ?>
-        </tbody>
+
+            $filePath = $directoryPath . $file;
+
+            // Check if it's a directory or a file and store accordingly
+            if (is_dir($filePath)) {
+                $directories[] = $file;
+            } else {
+                $regularFiles[] = $file;
+            }
+        }
+
+        // Sort both directories and regular files alphabetically
+        sort($directories);
+        sort($regularFiles);
+
+        // Merge directories and files (directories come first)
+        $sortedFiles = array_merge($directories, $regularFiles);
+
+        // Display the sorted files
+        foreach ($sortedFiles as $file): 
+            $filePath = $directoryPath . $file;
+            $lastModified = date("Y-m-d H:i:s", filemtime($filePath));
+            
+            // Check if it's a directory
+            if (is_dir($filePath)) {
+                $icon = 'folder';  // Folder icon
+            } else {
+                $icon = pathinfo($file, PATHINFO_EXTENSION) == 'php' ? 'code' : 'description';
+            }
+    ?>
+    <tr>
+        <td><span class='material-symbols-rounded'><?= htmlspecialchars($icon) ?></span></td>
+        <td><a href='edit_file.php?file=<?= urlencode($file) ?>' target='_blank'><?= htmlspecialchars($file) ?></a></td>
+        <td><?= htmlspecialchars($lastModified) ?></td>
+    </tr>
+    <?php 
+        endforeach;
+    } else {
+        echo "<tr><td colspan='3'>No files found</td></tr>";
+    }
+    ?>
+</tbody>
+
+
     </table>
 </div>
         </main>
